@@ -1,14 +1,18 @@
 #!/usr/bin/python3
 #-*-coding;utf-8-*-
 
+
+"""
+The length of one sample tested should be 20000 bits@FIPS140-2.
+The argument 'bitstream' for each test function is string made of '1' or '0'.
+need python3.4+ to run.
+"""
+
 import os
-import binascii
-import threading
 
 
 BIN = lambda x,keta: '0' * (keta - len(bin(x)[2:])) + bin(x)[2:]
 HEX = lambda x,keta: '0' * (keta - len(hex(x)[2:])) + hex(x)[2:]
-
 
 
 
@@ -20,16 +24,17 @@ def bitcountby32bit(num):
     return (num & 0x0000ffff) + (num >> 16 & 0x0000ffff)
 
 def theMonobitTest(bitstream):
+    if len(bitstream) != 20000:
+        raise IndexError
     onecnt = 0
-    if len(bitstream) < 20000:
-        print(len(bitstream))
-        raise ValueError
     for i in range(625):#20000 / 32 = 625
         onecnt += bitcountby32bit(int(bitstream[(i * 32):(i*32)+32],2))
     result = True if 9725 < onecnt < 10275 else False 
     return result,onecnt
 
 def thePokerTest(bitstream):
+    if len(bitstream) != 20000:
+        raise IndexError
     g = [0 for _ in range(16)]
     for i in range(0,20000,4):
         g[int(bitstream[i:i+4],2)] += 1
@@ -39,6 +44,8 @@ def thePokerTest(bitstream):
 
 
 def theRunsTest(bitstream):
+    if len(bitstream) != 20000:
+        raise IndexError
     bitlen = len(bitstream)
     idx = 0;run = 0;
     runlength0 = {1:0,2:0,3:0,4:0,5:0,6:0}
@@ -61,11 +68,15 @@ def theRunsTest(bitstream):
     return result0,runlength0,result1,runlength1
 
 def parseRunsTest(rundict):
+    if len(bitstream) != 20000:
+        raise IndexError
     return (2315 <= rundict[1] <= 2685) and (1114 <= rundict[2] <= 1386) and \
         (527 <= rundict[3] <= 723) and (240 <= rundict[4] <= 384) and \
         (103 <= rundict[5] <= 209) and (103 <= rundict[6] <= 209)
 
 def theLongrunsTest(bitstream):
+    if len(bitstream) != 20000:
+        raise IndexError
     bitlen = len(bitstream)
     idx = 0;longrun = 0;runchar = None
     while idx < bitlen:
@@ -84,26 +95,15 @@ def theLongrunsTest(bitstream):
 
 
 
-def main(srcfile,isbinary,testlist,outfile):
-    data = ""
-    if isbinary:
-        f = open(srcfile,"rb")
-        data = BIN(int.from_bytes(f.read(2500),"little"),20000)
-    else:
-        f = open(srcfie,"r")
-        while True:
-            line = f.readline().rstrip()
-            if not line:break
-            data += line.encode()
-        if len(data) > 20000 / 8:
-            raise ValueError
-        data = BIN(int.from_bytes(data,"little"),20000)
-    f.close()
-    result = testall(data)
-    if outfile:
-        with open(outfile+".txt","w") as of:
-            of.write(result)
-            
+def sample():
+    A_sample = BIN(int.from_bytes(os.urandom(2500),"little"),20000)
+    print("The Monobit Test:{0}".format(theMonobitTest(A_sample)))
+    print("The Poker Test:{0}".format(theRunsTest(A_sample)))
+    print("The Runs Test:{0}".format(theRunsTest(A_sample)))
+    print("The Longruns:{0}".format(theLongrunsTest(A_sample)))
+
+if __name__ == '__main__':
+    sample()
     
         
     
