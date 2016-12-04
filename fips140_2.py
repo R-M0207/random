@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 #-*-codig;utf-8-*-
 
-import RNG as rng
 import os
 import binascii
 import argparse
@@ -13,32 +12,6 @@ HEX = lambda x,keta: '0' * (keta - len(hex(x)[2:])) + hex(x)[2:]
 
 
 
-class FIPS140_2(rng.RNG):
-    def __init__(self,src_data,isfile,mode):
-        if isfile:
-            f = open(src_data,"r"+mode)
-            if mode = "b":
-                self.sample = f.read()
-            else:
-                self.sample = self.parseTxt(f.read())
-        else:
-            self.sample = src_data
-        
-
-    def test(self,__test):
-        pass
-
-    
-    def theMonoBit(self):
-        self.result_of_mono,self.ones = theMonobitTest(self.sample)
-
-    def thePoker(self,):
-        pass
-
-    def theRuns(self,):
-        pass
-
-    def theLongrun(self,):
 
 def bitcountby32bit(num):
     num = (num & 0x55555555) + (num >> 1 & 0x55555555)
