@@ -1,9 +1,8 @@
 #!/usr/bin/python3
-#-*-codig;utf-8-*-
+#-*-coding;utf-8-*-
 
 import os
 import binascii
-import argparse
 import threading
 
 
@@ -83,63 +82,7 @@ def theLongrunsTest(bitstream):
     result = True if longrun < 26 else False
     return x,longrun,result
 
-def s_mono(files):     
-    results = []
-    for df in files:
-        dataf = open(df,"rb")
-        data = dataf.read()
-        dataf.close()
-        bits = BIN(int.from_bytes(data,"big"),20000)
-        results.append(theMonobitTest(bits))
-        
-    return results
 
-def s_poker(files):
-    results = []
-    for df in files:
-        datfile = open(df,"rb")
-        data = datfile.read(2500)
-        datfile.close()
-        bits = BIN(int.from_bytes(data,"big"),20000)
-        results.append(thePokerTest(bits))
-    return results
-
-def s_runs(files):
-    results = []
-    for df in files:
-        datfile = open(df,"rb")
-        data = datfile.read(2500)
-        datfile.close()
-        bits = BIN(int.from_bytes(data,"big"),20000)
-        results.append(theRunsTest(bits))
-    return results
-
-def s_long(files):
-    results = []
-    for df in files:
-        datfile = open(df,"rb")
-        data = datfile.read(2500)
-        datfile.close()
-        bits = BIN(int.from_bytes(data,"big"),20000)
-        results.append(theLongrunTest(bits))
-    return results
-    
-def testall(bitseq):
-    print("[*] Running: The Monobit Test..",end="")
-    monores,v = theMonobitTest(bitseq)
-    print("Result:{0},{1}".format(monores,v))
-
-    print("[*] Running: The Poker Test..",end="")
-    pokerres,w = thePokerTest(bitseq)
-    print("Result:{0},{1}".format(pokerres,w))
-
-    print("[*] Running: The Runs Test..")
-    run0res,x,run1res,y = theRunsTest(bitseq)
-    print("[+] Result:{0},{1},{2},{3}".format(run0res,x,run1res,y))
-
-    print("[*] Running: The Longruns Test..",end="")
-    z,lrun,lrunres = theLongrunsTest(bitseq)
-    print("Result:{0},{1},{2}".format(z,lrun,lrunres))
 
 def main(srcfile,isbinary,testlist,outfile):
     data = ""
@@ -166,12 +109,4 @@ def main(srcfile,isbinary,testlist,outfile):
     
     
 
-if __name__ == '__main__':
-    print("[*] Runnig {}".format(__file__))
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-s","--src",type=str,help="[+]")
-    parser.add_argument("-b","--bin",action="store_action",help="[*]")
-    parser.add_argument("-t","--test",type=list,default=[0])
-    parser.add_argument("-o","--out",type=str,default="stdout")
-    args = parser.parse_args()
-    main(args.src,args.bin,args.test,args.out)
+
